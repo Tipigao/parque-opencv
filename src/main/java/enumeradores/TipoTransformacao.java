@@ -11,9 +11,10 @@ package enumeradores;
  */
 public enum TipoTransformacao {
 
-    TransformadaDeHough("Transformada de Hough", exemplos.TransformadaHough.class.getName()),
-    DetectaCantosHarris("Detecta Cantos Harris", exemplos.DetectaCantosHarris.class.getName());
-    
+    DesfocagemGaussiana("Desfocagem Gaussiana", exemplos.DesfocagemGaussiana.class.getName())
+    ,TransformadaDeHough("Transformada de Hough", exemplos.TransformadaHough.class.getName())
+    //,DetectaCantosHarris("Detecta Cantos Harris", exemplos.DetectaCantosHarris.class.getName())
+    ;
     private final String descricao;
     private final String classe;
 
@@ -25,7 +26,7 @@ public enum TipoTransformacao {
     public String getDescricao() {
         return descricao;
     }
-    
+
     public String getClasse() {
         return classe;
     }

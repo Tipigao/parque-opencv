@@ -27,6 +27,8 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         ajustaTamanhoJanela();
+        
+        pnlControleItem.getVerticalScrollBar().setUnitIncrement(16);
     }
 
     /**
@@ -43,10 +45,10 @@ public class Principal extends javax.swing.JFrame {
         pnlControles = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cboDemonstracao = new javax.swing.JComboBox<>();
-        pnlControleItem = new javax.swing.JPanel();
         btnVisualizar = new javax.swing.JButton();
         btnPararExibicao = new javax.swing.JButton();
         cbxMiniaturaProcessada = new javax.swing.JCheckBox();
+        pnlControleItem = new javax.swing.JScrollPane();
         pnlSaidaImagem = new javax.swing.JPanel();
         mnuPrincipal = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -55,7 +57,7 @@ public class Principal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Parque OpenCV");
         setMinimumSize(new java.awt.Dimension(480, 320));
-        setPreferredSize(new java.awt.Dimension(640, 480));
+        setPreferredSize(new java.awt.Dimension(800, 600));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -66,7 +68,7 @@ public class Principal extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jSplitPane1.setDividerLocation(300);
+        jSplitPane1.setDividerLocation(400);
         jSplitPane1.setDoubleBuffered(true);
         jSplitPane1.setMinimumSize(new java.awt.Dimension(250, 480));
         jSplitPane1.setName(""); // NOI18N
@@ -84,9 +86,6 @@ public class Principal extends javax.swing.JFrame {
                 cboDemonstracaoActionPerformed(evt);
             }
         });
-
-        pnlControleItem.setAutoscrolls(true);
-        pnlControleItem.setLayout(new java.awt.GridLayout(1, 0));
 
         btnVisualizar.setText("Exibir");
         btnVisualizar.setEnabled(false);
@@ -119,11 +118,11 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(pnlControlesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlControleItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlControleItem)
                     .addGroup(pnlControlesLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboDemonstracao, 0, 218, Short.MAX_VALUE))
+                        .addComponent(cboDemonstracao, 0, 318, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlControlesLayout.createSequentialGroup()
                         .addComponent(cbxMiniaturaProcessada)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -158,7 +157,7 @@ public class Principal extends javax.swing.JFrame {
         pnlSaidaImagem.setLayout(pnlSaidaImagemLayout);
         pnlSaidaImagemLayout.setHorizontalGroup(
             pnlSaidaImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 590, Short.MAX_VALUE)
+            .addGap(0, 490, Short.MAX_VALUE)
         );
         pnlSaidaImagemLayout.setVerticalGroup(
             pnlSaidaImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,7 +238,20 @@ public class Principal extends javax.swing.JFrame {
         if (largura < 1000) {
             this.setSize(new Dimension(largura, altura));
         } else {
-            //Tamanho padrão e centralizado
+            boolean aplicaNovoTamanho = false;
+            if (largura >= 1024 && altura >= 768){
+                largura = 1024;
+                altura = 768;
+                aplicaNovoTamanho = true;
+            }else if (largura >= 800 && altura >= 600){
+                aplicaNovoTamanho = true;
+            }
+            
+            if(aplicaNovoTamanho){
+                this.setSize(new Dimension(largura, altura));
+            }
+            
+            //Posição centralizada
             setLocationRelativeTo(null);
         }
     }
@@ -254,9 +266,9 @@ public class Principal extends javax.swing.JFrame {
                 pnlSaidaImagem.revalidate();
                 pnlSaidaImagem.repaint();
 
-                pnlControleItem.removeAll();
-                pnlControleItem.revalidate();
-                pnlControleItem.repaint();
+//                pnlControleItem.removeAll();;;
+//                pnlControleItem.revalidate();
+//                pnlControleItem.repaint();
             }
 
             if (cboDemonstracao.getSelectedIndex() > 0) {
@@ -270,7 +282,7 @@ public class Principal extends javax.swing.JFrame {
             objDemo = (captura.ICapturaVideoUI) Class.forName(nmClasse + "UI").newInstance();
             javax.swing.JPanel pnlDemo = (javax.swing.JPanel) objDemo;
             //System.out.println(pnlDemo.getPreferredSize());
-            pnlControleItem.add(pnlDemo);
+            pnlControleItem.getViewport().add(pnlDemo);
 
             //pnlControleItem.setSize(new Dimension(600, 350));
             objDemo.setPainelExibicao(pnlSaidaImagem);
@@ -364,7 +376,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JMenuItem mnuArquivo;
     private javax.swing.JMenuBar mnuPrincipal;
-    private javax.swing.JPanel pnlControleItem;
+    private javax.swing.JScrollPane pnlControleItem;
     private javax.swing.JPanel pnlControles;
     private javax.swing.JPanel pnlSaidaImagem;
     // End of variables declaration//GEN-END:variables

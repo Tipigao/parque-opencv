@@ -48,7 +48,7 @@ public class TransformadaHough extends CapturaVideo {
 
         idImg = 1;
         rho = 1;
-        thetaGraus = 180;
+        thetaGraus = 1;//180;
         threshold = 10;
         minLineLength = 20;
         maxLineGap = 20;

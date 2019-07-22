@@ -219,7 +219,7 @@ public class TransformadaHoughUI extends javax.swing.JPanel implements ICapturaV
         jPanel2.add(spnDistancia);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Ângulo em radianos");
+        jLabel2.setText("Ângulo");
         jPanel2.add(jLabel2);
 
         sldAngulo.setMaximum(360);
@@ -389,7 +389,7 @@ public class TransformadaHoughUI extends javax.swing.JPanel implements ICapturaV
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -585,7 +585,7 @@ public class TransformadaHoughUI extends javax.swing.JPanel implements ICapturaV
         sldSobel.setValue(vl);
     }
     // </editor-fold>
-
+    
     // <editor-fold defaultstate="collapsed" desc="Métodos herdados">
     @Override
     public boolean cameraDisponivel() {
