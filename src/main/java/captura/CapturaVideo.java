@@ -28,6 +28,7 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
     private VideoCapture camera;
     private Thread tarefa;
     private boolean capturaEmAndamento;
+    private boolean exibicaoInvertida;
 
     public void iniciarCaptura() {
         capturaEmAndamento = true;
@@ -47,6 +48,14 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
         } catch (InterruptedException ex) {
             Logger.getLogger(CapturaVideo.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void setExibicaoInvertida(boolean exibicaoInvertida) {
+        this.exibicaoInvertida = exibicaoInvertida;
+    }
+    
+    public boolean getExibicaoInvertida() {
+        return exibicaoInvertida;
     }
 
     @Override
@@ -72,6 +81,14 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
 
             while (capturaEmAndamento) {
                 camera.read(imgFrame);
+                if(imgFrame.empty()){
+                    continue;
+                }
+                
+                if(getExibicaoInvertida()){
+                    org.opencv.core.Core.flip(imgFrame, imgFrame, +1);
+                }
+                
                 Mat imgProcessada = processaFrame(imgFrame);
                 BufferedImage buffImg1 = matToBufferedImage(imgFrame);
                 BufferedImage buffImg2 = matToBufferedImage(imgProcessada);

@@ -160,7 +160,7 @@ public class TransformadaHough extends CapturaVideo {
         return imgDestino;
     }
 
-    public void transformadaDeHough(Mat imgOrigem, Mat imgDestino) {
+    private void transformadaDeHough(Mat imgOrigem, Mat imgDestino) {
         if (imgOrigem.channels() == 3) {
             Imgproc.cvtColor(imgOrigem, imgDestino, Imgproc.COLOR_BGR2GRAY);
         } else {
@@ -181,7 +181,7 @@ public class TransformadaHough extends CapturaVideo {
         }
     }
 
-    public void aplicarLinhas(Mat lines, Mat imgAlvo) {
+    private void aplicarLinhas(Mat lines, Mat imgAlvo) {
         Scalar cor = new Scalar(corLinha.getBlue(), corLinha.getGreen(), corLinha.getRed());
         
         for (int i = 0; i < lines.rows(); i++) {

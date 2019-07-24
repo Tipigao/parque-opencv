@@ -49,6 +49,7 @@ public class Principal extends javax.swing.JFrame {
         btnPararExibicao = new javax.swing.JButton();
         cbxMiniaturaProcessada = new javax.swing.JCheckBox();
         pnlControleItem = new javax.swing.JScrollPane();
+        cbxNormalInvertida = new javax.swing.JCheckBox();
         pnlSaidaImagem = new javax.swing.JPanel();
         mnuPrincipal = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -111,6 +112,14 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        cbxNormalInvertida.setSelected(true);
+        cbxNormalInvertida.setText("Invertida");
+        cbxNormalInvertida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxNormalInvertidaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlControlesLayout = new javax.swing.GroupLayout(pnlControles);
         pnlControles.setLayout(pnlControlesLayout);
         pnlControlesLayout.setHorizontalGroup(
@@ -122,10 +131,12 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(pnlControlesLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboDemonstracao, 0, 318, Short.MAX_VALUE))
+                        .addComponent(cboDemonstracao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlControlesLayout.createSequentialGroup()
                         .addComponent(cbxMiniaturaProcessada)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbxNormalInvertida)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                         .addComponent(btnPararExibicao)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnVisualizar)))
@@ -142,9 +153,10 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(pnlControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVisualizar)
                     .addComponent(btnPararExibicao)
-                    .addComponent(cbxMiniaturaProcessada))
+                    .addComponent(cbxMiniaturaProcessada)
+                    .addComponent(cbxNormalInvertida))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlControleItem, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
+                .addComponent(pnlControleItem, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -157,11 +169,11 @@ public class Principal extends javax.swing.JFrame {
         pnlSaidaImagem.setLayout(pnlSaidaImagemLayout);
         pnlSaidaImagemLayout.setHorizontalGroup(
             pnlSaidaImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
+            .addGap(0, 528, Short.MAX_VALUE)
         );
         pnlSaidaImagemLayout.setVerticalGroup(
             pnlSaidaImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 478, Short.MAX_VALUE)
+            .addGap(0, 480, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(pnlSaidaImagem);
@@ -191,7 +203,7 @@ public class Principal extends javax.swing.JFrame {
         if (objDemo != null) {
             objDemo.parar();
         }
-
+        
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
 
@@ -221,6 +233,15 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxMiniaturaProcessadaActionPerformed
 
+    private void cbxNormalInvertidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxNormalInvertidaActionPerformed
+        if (objDemo != null) {
+            objDemo.setExibicaoInvertida(cbxNormalInvertida.isSelected());
+        }
+        
+        //cbxNormalInvertida.setText(cbxNormalInvertida.isSelected() ? "Normal" : "Invertida");
+        
+    }//GEN-LAST:event_cbxNormalInvertidaActionPerformed
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -228,38 +249,34 @@ public class Principal extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     private void ajustaTamanhoJanela() {
-
+        
         Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
         Rectangle areaTela = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-
+        
         int largura = (int) Math.min(areaTela.getWidth(), tamanhoTela.getWidth());
         int altura = (int) Math.min(areaTela.getHeight(), tamanhoTela.getHeight());
 
-        if (largura < 1000) {
-            this.setSize(new Dimension(largura, altura));
-        } else {
-            boolean aplicaNovoTamanho = false;
-            if (largura >= 1024 && altura >= 768){
-                largura = 1024;
-                altura = 768;
-                aplicaNovoTamanho = true;
-            }else if (largura >= 800 && altura >= 600){
-                aplicaNovoTamanho = true;
-            }
+        //System.out.printf("A resolução da tela é: %sx%s\n", largura, altura);
+        if (largura > 1024) {
+            //Se a resolução do monitor for inferior à 50% de 1024 de largura, então é um monitor com média resolução
+            boolean larguraMedia = largura < (1024 * 1.5);
             
-            if(aplicaNovoTamanho){
-                this.setSize(new Dimension(largura, altura));
-            }
+            largura = larguraMedia ? largura : 1024;
+            altura = larguraMedia && altura < (768 * 1.5) ? altura : 768;
             
-            //Posição centralizada
-            setLocationRelativeTo(null);
+            //System.out.printf("Nova resolução: %sx%s\n", largura, altura);
         }
-    }
+        
+        setSize(largura, altura);
 
+        //Posição centralizada
+        setLocationRelativeTo(null);
+    }
+    
     public void exibeVideoCamera() {
         try {
             String nmClasse = null;
-
+            
             if (objDemo != null) {
                 objDemo.parar();
                 pnlSaidaImagem.setBackground(new java.awt.Color(0, 0, 0));
@@ -270,7 +287,7 @@ public class Principal extends javax.swing.JFrame {
 //                pnlControleItem.revalidate();
 //                pnlControleItem.repaint();
             }
-
+            
             if (cboDemonstracao.getSelectedIndex() > 0) {
                 enumeradores.TipoTransformacao tpt = (enumeradores.TipoTransformacao) cboDemonstracao.getSelectedItem();
                 nmClasse = tpt.getClasse();
@@ -278,34 +295,36 @@ public class Principal extends javax.swing.JFrame {
                 //nmClasse = captura.VideoSimples.class.getName();// "captura.VideoSimples";
                 nmClasse = captura.VideoSimples.class.getCanonicalName();
             }
-
+            
             objDemo = (captura.ICapturaVideoUI) Class.forName(nmClasse + "UI").newInstance();
             javax.swing.JPanel pnlDemo = (javax.swing.JPanel) objDemo;
             //System.out.println(pnlDemo.getPreferredSize());
             pnlControleItem.getViewport().add(pnlDemo);
 
             //pnlControleItem.setSize(new Dimension(600, 350));
+            objDemo.setExibicaoInvertida(cbxNormalInvertida.isSelected());
             objDemo.setPainelExibicao(pnlSaidaImagem);
             objDemo.iniciar();
             pnlDemo.setVisible(true);
-
+            
             new Thread() {
                 @Override
                 public void run() {
                     
-                     cboDemonstracao.setEnabled(false);
-
-                     if(temporizadorVerificaCamera!=null){
-                         temporizadorVerificaCamera.cancel();
-                         temporizadorVerificaCamera.purge();
-                     }
-                     
+                    cboDemonstracao.setEnabled(false);
+                    
+                    if (temporizadorVerificaCamera != null) {
+                        temporizadorVerificaCamera.cancel();
+                        temporizadorVerificaCamera.purge();
+                    }
+                    
                     temporizadorVerificaCamera = new java.util.Timer();
                     temporizadorVerificaCamera.scheduleAtFixedRate(new java.util.TimerTask() {
-                        int cont=0;
+                        int cont = 0;
+                        
                         @Override
                         public void run() {
-                            if(!objDemo.cameraDisponivel()){
+                            if (!objDemo.cameraDisponivel()) {
                                 //System.out.println("Esperando a câmera ficar disponível " +(++cont));
                                 return;
                             }
@@ -318,7 +337,7 @@ public class Principal extends javax.swing.JFrame {
                     }, 0, 200);
                 }
             }.start();
-
+            
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -355,14 +374,16 @@ public class Principal extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        //System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Principal().setVisible(true);
+                //new CornerSubPix(args);
             }
         });
     }
-
+    
     private captura.ICapturaVideoUI objDemo;
     private java.util.Timer temporizadorVerificaCamera;
 
@@ -371,6 +392,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnVisualizar;
     private javax.swing.JComboBox<String> cboDemonstracao;
     private javax.swing.JCheckBox cbxMiniaturaProcessada;
+    private javax.swing.JCheckBox cbxNormalInvertida;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JSplitPane jSplitPane1;

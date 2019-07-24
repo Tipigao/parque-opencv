@@ -611,18 +611,33 @@ public class TransformadaHoughUI extends javax.swing.JPanel implements ICapturaV
     public void setRenderizaMiniaturaProcessada(boolean renderizaMiniaturaProcessada) {
         this.renderizaMiniaturaProcessada = renderizaMiniaturaProcessada;
     }
+    
+    @Override
+    public void setExibicaoInvertida(boolean exibicaoInvertida) {
+        obj.setExibicaoInvertida(exibicaoInvertida);
+    }
+    
+    @Override
+    public boolean getExibicaoInvertida() {
+        return obj.getExibicaoInvertida();
+    }
 
     @Override
     public void update(Observable o, Object arg) {
         BufferedImage[] bufImgs = (BufferedImage[]) arg;
         //Graphics g = pnlExibicao.getGraphics();
 
+        if (bufImgs.length == 0) {
+            camDisponivel = true;
+            return;
+        }
+
         //bufImgs[1].getGraphics().setColor(Color.blue);
         //bufImgs[1].getGraphics().drawString("Contorno", 12, 12);
-        if (radImgOriginal.isSelected()) {
+        if (radImgOriginal.isSelected() && bufImgs[0] != null) {
             //g.drawImage(bufImgs[0], 0, 0, null);
             JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[0]);
-        } else if (radImgContorno.isSelected()) {
+        } else if (radImgContorno.isSelected() && bufImgs[1] != null) {
             //g.drawImage(bufImgs[1], 0, 0, null);
             JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[1]);
             //g.drawImage(bufImgs[1], 0, 0, pnlExibicao.getWidth(), pnlExibicao.getHeight(), null);

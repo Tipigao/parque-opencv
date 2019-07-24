@@ -12,6 +12,7 @@ package enumeradores;
 public enum TipoTransformacao {
 
     DesfocagemGaussiana("Desfocagem Gaussiana", exemplos.DesfocagemGaussiana.class.getName())
+    ,EstimativaFluxoOptico("Estimativa de Fluxo Óptico", exemplos.EstimativaFluxoOptico.class.getName())
     ,TransformadaDeHough("Transformada de Hough", exemplos.TransformadaHough.class.getName())
     //,DetectaCantosHarris("Detecta Cantos Harris", exemplos.DetectaCantosHarris.class.getName())
     ;

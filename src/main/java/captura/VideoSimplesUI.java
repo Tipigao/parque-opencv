@@ -58,6 +58,16 @@ public class VideoSimplesUI extends javax.swing.JPanel implements ICapturaVideoU
     public void setRenderizaMiniaturaProcessada(boolean renderizaMiniaturaProcessada) {
         this.renderizaMiniaturaProcessada = renderizaMiniaturaProcessada;
     }
+    
+    @Override
+    public void setExibicaoInvertida(boolean exibicaoInvertida) {
+        obj.setExibicaoInvertida(exibicaoInvertida);
+    }
+    
+    @Override
+    public boolean getExibicaoInvertida() {
+        return obj.getExibicaoInvertida();
+    }
 
     @Override
     public void update(Observable o, Object arg) {

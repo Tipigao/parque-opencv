@@ -17,4 +17,6 @@ public interface ICapturaVideoUI {
     public void parar();
     public void setPainelExibicao(JPanel painel);
     public void setRenderizaMiniaturaProcessada(boolean renderizaMiniaturaProcessada);
+    public void setExibicaoInvertida(boolean exibicaoInvertida);
+    public boolean getExibicaoInvertida();
 }
