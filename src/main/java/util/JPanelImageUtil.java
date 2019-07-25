@@ -12,7 +12,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import javafx.util.Pair;
 import javax.swing.JPanel;
 
 /**
@@ -35,7 +34,7 @@ public class JPanelImageUtil {
      * @param bufImg
      * @return Matriz de inteiros com posição x e y da imagem e largura e altura da imagem desenhada no painel
      */
-    public static Pair<java.awt.Point, java.awt.Dimension> drawImageWithAspectRatio(JPanel pnl, BufferedImage bufImg) {
+    public static Tuple<java.awt.Point, java.awt.Dimension> drawImageWithAspectRatio(JPanel pnl, BufferedImage bufImg) {
         BufferedImage bufImg2 = scaleImage(
                 bufImg,
                 BufferedImage.TYPE_INT_ARGB,
@@ -51,7 +50,7 @@ public class JPanelImageUtil {
         java.awt.Point p = new java.awt.Point(posX, posY);
         java.awt.Dimension d = new java.awt.Dimension( bufImg2.getWidth(), bufImg2.getHeight());
         
-        return new Pair<>(p, d);
+        return new Tuple<>(p, d);
     }
 
 //    public static void drawImage(JPanel pnl, BufferedImage bufImg, Point p) {
