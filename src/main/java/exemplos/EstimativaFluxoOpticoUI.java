@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import javafx.util.Pair;
 import javax.swing.JPanel;
 import org.bytedeco.opencv.opencv_core.Point2f;
 import org.opencv.core.*;
@@ -36,6 +37,10 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
 
         obj = new EstimativaFluxoOptico();
         obj.addObserver(this);
+        
+        obj.setExibeMelhoresPontos(radMelhoresPontos.isSelected());
+        obj.setExibeRastreamento(radRastreamento.isSelected());
+        cbxLinhas.setEnabled(radRastreamento.isSelected());
     }
 
     /**
@@ -47,27 +52,142 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        sldHisterese2 = new javax.swing.JSlider();
+        spnHisterese1 = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        cbxGradiente = new javax.swing.JCheckBox();
+        jPanel3 = new javax.swing.JPanel();
+        radMelhoresPontos = new javax.swing.JRadioButton();
+        radRastreamento = new javax.swing.JRadioButton();
+        cbxLinhas = new javax.swing.JCheckBox();
 
-        jLabel1.setText("Estimativa de Fluxo Óptico");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Detecção de contorno (Bordas de Canny)"));
+        jPanel2.setLayout(new java.awt.GridLayout(0, 3, 5, 5));
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("1º limiar histerese");
+        jPanel2.add(jLabel5);
+
+        sldHisterese2.setMaximum(2000);
+        sldHisterese2.setMinimum(1);
+        sldHisterese2.setValue(600);
+        sldHisterese2.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldHisterese2StateChanged(evt);
+            }
+        });
+        jPanel2.add(sldHisterese2);
+
+        spnHisterese1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spnHisterese1StateChanged(evt);
+            }
+        });
+        jPanel2.add(spnHisterese1);
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel7.setText("Gradiente");
+        jPanel2.add(jLabel7);
+
+        cbxGradiente.setSelected(true);
+        cbxGradiente.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                cbxGradienteStateChanged(evt);
+            }
+        });
+        jPanel2.add(cbxGradiente);
+
+        jPanel3.setLayout(new java.awt.GridLayout());
+
+        buttonGroup1.add(radMelhoresPontos);
+        radMelhoresPontos.setSelected(true);
+        radMelhoresPontos.setText("Melhores pontos");
+        radMelhoresPontos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radMelhoresPontosActionPerformed(evt);
+            }
+        });
+        jPanel3.add(radMelhoresPontos);
+
+        buttonGroup1.add(radRastreamento);
+        radRastreamento.setText("Rastreamento");
+        radRastreamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radRastreamentoActionPerformed(evt);
+            }
+        });
+        jPanel3.add(radRastreamento);
+
+        cbxLinhas.setText("Linhas");
+        cbxLinhas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxLinhasActionPerformed(evt);
+            }
+        });
+        jPanel3.add(cbxLinhas);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(202, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(126, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(241, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void sldHisterese2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldHisterese2StateChanged
+        //int vl = (int) sldHisterese1.getValue();
+        //obj.setCannyThreshold1(vl);
+        //spnHisterese1.setValue(vl);
+    }//GEN-LAST:event_sldHisterese2StateChanged
+
+    private void spnHisterese1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnHisterese1StateChanged
+        //int vl = (int) spnHisterese1.getValue();
+        //obj.setCannyThreshold1(vl);
+        //sldHisterese1.setValue(vl);
+    }//GEN-LAST:event_spnHisterese1StateChanged
+
+    private void cbxGradienteStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbxGradienteStateChanged
+        //obj.setCannyGradient(cbxGradiente.isSelected());
+    }//GEN-LAST:event_cbxGradienteStateChanged
+
+    private void radMelhoresPontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radMelhoresPontosActionPerformed
+        obj.setExibeMelhoresPontos(radMelhoresPontos.isSelected());
+        obj.setExibeRastreamento(!radMelhoresPontos.isSelected());
+        cbxLinhas.setEnabled(radRastreamento.isSelected());
+    }//GEN-LAST:event_radMelhoresPontosActionPerformed
+
+    private void radRastreamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radRastreamentoActionPerformed
+        obj.setExibeRastreamento(radRastreamento.isSelected());
+        obj.setExibeMelhoresPontos(!radRastreamento.isSelected());
+        cbxLinhas.setEnabled(radRastreamento.isSelected());
+    }//GEN-LAST:event_radRastreamentoActionPerformed
+
+    private void cbxLinhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxLinhasActionPerformed
+        obj.setExibeLinhasRastreamento(cbxLinhas.isSelected());
+    }//GEN-LAST:event_cbxLinhasActionPerformed
 
     // <editor-fold defaultstate="collapsed" desc="Métodos herdados">
     @Override
@@ -160,13 +280,31 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
             return;
         }
 
-        JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[1]);
+        Pair<java.awt.Point, java.awt.Dimension> ddoImg = JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[1]);
+        
+        obj.setPosicaoImagem(ddoImg.getKey());
+        obj.setTamanhoImagem(ddoImg.getValue());
+        
+        //System.out.printf("%d, %d, %d, %d\n", ddoImg[0], ddoImg[1], ddoImg[2], ddoImg[3]);
 
         camDisponivel = true;
     }
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox cbxGradiente;
+    private javax.swing.JCheckBox cbxLinhas;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JRadioButton radMelhoresPontos;
+    private javax.swing.JRadioButton radRastreamento;
+    private javax.swing.JSlider sldHisterese1;
+    private javax.swing.JSlider sldHisterese2;
+    private javax.swing.JSpinner spnHisterese1;
     // End of variables declaration//GEN-END:variables
 }

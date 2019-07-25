@@ -334,7 +334,7 @@ public class Principal extends javax.swing.JFrame {
                             cboDemonstracao.setEnabled(true);
                             cboDemonstracao.requestFocus();
                         }
-                    }, 0, 200);
+                    }, 0, 50);
                 }
             }.start();
             

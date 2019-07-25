@@ -9,8 +9,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import javafx.util.Pair;
 import javax.swing.JPanel;
 
 /**
@@ -18,20 +20,45 @@ import javax.swing.JPanel;
  * @author Roberto
  */
 public class JPanelImageUtil {
-
-    public static void drawImageWithAspectRatio(JPanel pnl, BufferedImage bufImg) {
-        BufferedImage bufImg2 = scaleImage(bufImg, BufferedImage.TYPE_INT_ARGB, (int) pnl.getWidth(), (int) pnl.getHeight());
-        drawImage(pnl, bufImg2);
-    }
-
-    public static void drawImage(JPanel pnl, BufferedImage bufImg) {
-        Graphics g = pnl.getGraphics();
+    
+    public static Point getPosicaoImagemPainel(JPanel pnl, BufferedImage bufImg){
         
         int posX = (pnl.getWidth() - bufImg.getWidth()) / 2;
         int posY = (pnl.getHeight() - bufImg.getHeight()) / 2;
         
-        g.drawImage(bufImg, posX, posY, bufImg.getWidth(), bufImg.getHeight(), null);
+        return new Point(posX, posY);
     }
+
+    /**
+     * Desenha uma imagem centralizada em um painel, mantendo a proporção da imagem.
+     * @param pnl
+     * @param bufImg
+     * @return Matriz de inteiros com posição x e y da imagem e largura e altura da imagem desenhada no painel
+     */
+    public static Pair<java.awt.Point, java.awt.Dimension> drawImageWithAspectRatio(JPanel pnl, BufferedImage bufImg) {
+        BufferedImage bufImg2 = scaleImage(
+                bufImg,
+                BufferedImage.TYPE_INT_ARGB,
+                pnl.getWidth(),
+                pnl.getHeight());
+        
+        int posX = (pnl.getWidth() - bufImg2.getWidth()) / 2;
+        int posY = (pnl.getHeight() - bufImg2.getHeight()) / 2;
+        
+        Graphics g = pnl.getGraphics();
+        g.drawImage(bufImg2, posX, posY, bufImg2.getWidth(), bufImg2.getHeight(), null);
+        
+        java.awt.Point p = new java.awt.Point(posX, posY);
+        java.awt.Dimension d = new java.awt.Dimension( bufImg2.getWidth(), bufImg2.getHeight());
+        
+        return new Pair<>(p, d);
+    }
+
+//    public static void drawImage(JPanel pnl, BufferedImage bufImg, Point p) {
+//        Graphics g = pnl.getGraphics();
+//        
+//        g.drawImage(bufImg, (int)p.getX(), (int)p.getY(), bufImg.getWidth(), bufImg.getHeight(), null);
+//    }
     
     /**
      * Retirado de http://www.technojeeves.com/index.php/33-scale-an-image-in-java

@@ -9,8 +9,11 @@ import captura.CapturaVideo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -39,14 +42,53 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 
     private final String descricao = "Estimativa de fluxo óptico";
 
-    private Mat imgCinza;
+    private Mat imgCinza, imgCinzaAnt, mascaraAreaDeteccao;
     private java.awt.Point pontoIni, pontoFim;
-    private static final int MAX_CORNERS = 25;
-    private int maxCorners = 10;
     private Random rng;
+    private Rectangle retang;
+
+    private MatOfPoint2f prevFeatures, nextFeatures;
+    private MatOfPoint features;
+
+    private MatOfByte status;
+    private MatOfFloat err;
+
+    private boolean exibeMelhoresPontos, exibeRastreamento, exibeLinhasRastreamento;
 
     public EstimativaFluxoOptico() {
         rng = new Random(12345);
+
+        features = new MatOfPoint();
+        prevFeatures = new MatOfPoint2f();
+        nextFeatures = new MatOfPoint2f();
+        status = new MatOfByte();
+        err = new MatOfFloat();
+    }
+
+    public boolean getExibeMelhoresPontos() {
+        return exibeMelhoresPontos;
+    }
+
+    public void setExibeMelhoresPontos(boolean exibeMelhoresPontos) {
+        this.exibeMelhoresPontos = exibeMelhoresPontos;
+        restauraConfiguracaoRastreamento();
+    }
+    
+    public boolean getExibeLinhasRastreamento() {
+        return exibeLinhasRastreamento;
+    }
+    
+    public void setExibeLinhasRastreamento(boolean exibeLinhasRastreamento) {
+        this.exibeLinhasRastreamento = exibeLinhasRastreamento;
+    }
+
+    public boolean getExibeRastreamento() {
+        return exibeRastreamento;
+    }
+
+    public void setExibeRastreamento(boolean exibeRastreamento) {
+        this.exibeRastreamento = exibeRastreamento;
+        restauraConfiguracaoRastreamento();
     }
 
     public java.awt.Point getPontotIni() {
@@ -70,13 +112,44 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 
         Mat imgDestino = imgFrame.clone();
 
-        estimarFluxoOptico(imgFrame, imgDestino);
+        if (getExibeMelhoresPontos()) {
+            analisaMelhoresPontosRastreamento(imgFrame, imgDestino);
+            exibeMelhoresPontosRastreamento(imgDestino);
+        } else if (getExibeRastreamento()) {
+            estimarFluxoOptico(imgFrame, imgDestino);
+            
+            exibeCirculosMelhorRastreamento(imgDestino);
+            
+            if(getExibeLinhasRastreamento()){
+                exibeLinhasRastreamento(imgDestino);
+            }
+        }
 
         if (getPontotIni() != null && getPontotFim() != null) {
             desenhaRetangulo(imgDestino);
         }
 
         return imgDestino;
+    }
+    
+    private void restauraConfiguracaoRastreamento(){
+        features = new MatOfPoint();
+        prevFeatures = new MatOfPoint2f();
+        nextFeatures = new MatOfPoint2f();
+        status = new MatOfByte();
+        err = new MatOfFloat();
+        mascaraAreaDeteccao = new Mat();
+        imgCinzaAnt = null;
+    }
+
+    private void analisaMelhoresPontosRastreamento(Mat imgOrigem, Mat imgDestino) {
+
+        imgCinza = new Mat();
+
+        Imgproc.cvtColor(imgOrigem, imgCinza, Imgproc.COLOR_BGR2GRAY);
+
+        extraiCaracteristicasImagem();
+
     }
 
     private void estimarFluxoOptico(Mat imgOrigem, Mat imgDestino) {
@@ -85,27 +158,135 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 
         Imgproc.cvtColor(imgOrigem, imgCinza, Imgproc.COLOR_BGR2GRAY);
 
-        maxCorners = Math.max(maxCorners, 1);
-        MatOfPoint corners = new MatOfPoint();
+        //if (features.toArray().length == 0) {
+        if (features.empty()) {
+            extraiCaracteristicasImagem();
+
+            prevFeatures.fromList(features.toList());
+        }
+
+        imgCinzaAnt = imgCinzaAnt == null ? imgCinza.clone() : imgCinzaAnt;
+        
+        Video.calcOpticalFlowPyrLK(imgCinzaAnt, imgCinza, prevFeatures, nextFeatures, status, err);
+
+        imgCinzaAnt = imgCinza.clone();
+        prevFeatures.fromList(nextFeatures.toList());
+    }
+
+    private void extraiCaracteristicasImagem() {
+        int maxCorners = 10;
         double qualityLevel = 0.01;
         double minDistance = 10;
-        int blockSize = 3, gradientSize = 3;
+        int blockSize = 3;
+        int gradientSize = 3;
         boolean useHarrisDetector = false;
         double k = 0.04;
 
-        //Mat copy = imgOrigem.clone();
-        Imgproc.goodFeaturesToTrack(imgCinza, corners, maxCorners, qualityLevel, minDistance, new Mat(),
-                blockSize, gradientSize, useHarrisDetector, k);
+        mascaraAreaDeteccao = mascaraAreaDeteccao == null ? new Mat() : mascaraAreaDeteccao;
 
+        //Mat copy = imgOrigem.clone();
+        Imgproc.goodFeaturesToTrack(
+                imgCinza,
+                features,
+                maxCorners,
+                qualityLevel,
+                minDistance,
+                mascaraAreaDeteccao,
+                blockSize,
+                gradientSize,
+                useHarrisDetector,
+                k);
+    }
+
+    public void finalizaAreaSelecao() {
+        java.awt.Point p1 = getPontotIni();
+        java.awt.Point p2 = getPontotFim();
+
+        features = new MatOfPoint();
+        prevFeatures = new MatOfPoint2f();
+        nextFeatures = new MatOfPoint2f();
+        status = new MatOfByte();
+        err = new MatOfFloat();
+
+        retang = new Rectangle(p1, new Dimension((int) p2.getX(), (int) p2.getY()));
+
+        //mascaraAreaDeteccao = Mat.zeros(imgCinza.size(), CvType.CV_8U); 
+        mascaraAreaDeteccao = new Mat();
+
+        setPontoIni(null);
+        setPontoFim(null);
+    }
+
+    private void desenhaRetangulo(Mat img) {
+        java.awt.Point p1 = getPontotIni();
+        java.awt.Point p2 = getPontotFim();
+
+        if (p1 == null || p2 == null) {
+            return;
+        }
+
+        retang = null;
+
+        java.awt.Point p = getPosicaoImagem();
+        java.awt.Dimension d = getTamanhoImagem();
+
+        int px = (int) p.getX(),
+                py = (int) p.getY();
+
+        int p1x = (int) p1.getX() - px,
+                p1y = (int) p1.getY() - py,
+                p2x = (int) p2.getX() - px,
+                p2y = (int) p2.getY() - py;
+
+        double razaoImg = img.size().width / d.getWidth();
+
+        p1x *= razaoImg;
+        p1y *= razaoImg;
+        p2x *= razaoImg;
+        p2y *= razaoImg;
+
+        int lx = (int) img.size().width,
+                ly = (int) img.size().height;
+
+        p1x = p1x < 0 ? 0 : p1x;
+        p2x = p2x < 0 ? 0 : p2x;
+
+        p1x = p1x > lx ? lx - 1 : p1x;
+        p2x = p2x > lx ? lx - 1 : p2x;
+
+        p1y = p1y < 0 ? 0 : p1y;
+        p2y = p2y < 0 ? 0 : p2y;
+
+        p1y = p1y > ly ? ly - 1 : p1y;
+        p2y = p2y > ly ? ly - 1 : p2y;
+
+//        if ((p1x < 0 && p2x < 0)
+//                || (p1x > lx && p2x > lx)
+//                || (p1y < 0 && p2y < 0)
+//                || (p1y > ly && p2y > ly)) {
+//            return;
+//        }
+        Imgproc.rectangle(img, new Point(p1x, p1y), new Point(p2x, p2y), new Scalar(0, 0, 255), (int) Math.floor(1 / razaoImg));
+    }
+
+    private void exibeCirculosMelhorRastreamento(Mat img) {
+        List<Point> drawFeature = nextFeatures.toList();
+        for (int i = 0; i < drawFeature.size(); i++) {
+            Point p = drawFeature.get(i);
+            Imgproc.circle(img, p, 5, new Scalar(255));
+        }
+    }
+
+    private void exibeMelhoresPontosRastreamento(Mat img) {
         //System.out.println("** Number of corners detected: " + corners.rows());
-        int[] cornersData = new int[(int) (corners.total() * corners.channels())];
-        corners.get(0, 0, cornersData);
+        int[] cornersData = new int[(int) (features.total() * features.channels())];
+        features.get(0, 0, cornersData);
         int radius = 4;
-        Mat matCorners = new Mat(corners.rows(), 2, CvType.CV_32F);
+        Mat matCorners = new Mat(features.rows(), 2, CvType.CV_32F);
         float[] matCornersData = new float[(int) (matCorners.total() * matCorners.channels())];
         matCorners.get(0, 0, matCornersData);
-        for (int i = 0; i < corners.rows(); i++) {
-            Imgproc.circle(imgDestino, new Point(cornersData[i * 2], cornersData[i * 2 + 1]), radius,
+        for (int i = 0; i < features.rows(); i++) {
+            Imgproc.circle(img, new Point(cornersData[i * 2], cornersData[i * 2 + 1]), radius,
                     new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256)), Core.FILLED);
 
             matCornersData[i * 2] = cornersData[i * 2];
@@ -124,18 +305,19 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 //        }
     }
 
-    public void finalizaAreaSelecao() {
+    private void exibeLinhasRastreamento(Mat img) {
+        List<Point> prevList = features.toList(), nextList = nextFeatures.toList();
+        Scalar color = new Scalar(255);
 
-    }
-
-    private void desenhaRetangulo(Mat img) {
-        java.awt.Point p1 = getPontotIni();
-        java.awt.Point p2 = getPontotFim();
-        Imgproc.rectangle(img, new Point(p1.x, p1.y), new Point(p2.x, p2.y), new Scalar(255, 0, 0), 5);
+        for (int i = 0; i < prevList.size(); i++) {
+//                    Core.circle(mGray, prevList.get(i), 5, color);
+            Imgproc.line(img, prevList.get(i), nextList.get(i), color);
+        }
     }
 
     @Override
     public String getDescricao() {
         return descricao;
     }
+
 }

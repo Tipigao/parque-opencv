@@ -18,6 +18,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
+import util.JPanelImageUtil;
 
 /**
  *
@@ -29,7 +30,9 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
     private Thread tarefa;
     private boolean capturaEmAndamento;
     private boolean exibicaoInvertida;
-
+    private java.awt.Point posicaoImagem;
+    private java.awt.Dimension dimensoesImagem;
+    
     public void iniciarCaptura() {
         capturaEmAndamento = true;
         if (tarefa != null) {
@@ -49,17 +52,41 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
             Logger.getLogger(CapturaVideo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void setExibicaoInvertida(boolean exibicaoInvertida) {
         this.exibicaoInvertida = exibicaoInvertida;
     }
-    
+
     public boolean getExibicaoInvertida() {
         return exibicaoInvertida;
+    }
+    
+    @Override
+    public java.awt.Point getPosicaoImagem(){
+        return posicaoImagem;
+    }
+    
+    @Override
+    public void setPosicaoImagem(java.awt.Point posicaoImagem){
+        this.posicaoImagem = posicaoImagem;
+    }
+    
+    @Override
+    public java.awt.Dimension getTamanhoImagem(){
+        return dimensoesImagem;
+    }
+    
+    @Override
+    public void setTamanhoImagem(java.awt.Dimension dimensoesImagem){
+        this.dimensoesImagem = dimensoesImagem;
     }
 
     @Override
     public void run() {
+        leCamera();
+    }
+
+    private void leCamera() {
         try {
             System.out.println(new Date() + ": " + getDescricao() + " iniciado");
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -81,15 +108,16 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
 
             while (capturaEmAndamento) {
                 camera.read(imgFrame);
-                if(imgFrame.empty()){
+                if (imgFrame.empty()) {
                     continue;
                 }
-                
-                if(getExibicaoInvertida()){
+
+                if (getExibicaoInvertida()) {
                     org.opencv.core.Core.flip(imgFrame, imgFrame, +1);
                 }
-                
+
                 Mat imgProcessada = processaFrame(imgFrame);
+                
                 BufferedImage buffImg1 = matToBufferedImage(imgFrame);
                 BufferedImage buffImg2 = matToBufferedImage(imgProcessada);
                 setChanged();
