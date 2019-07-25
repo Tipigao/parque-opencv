@@ -12,11 +12,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import javafx.util.Pair;
 import javax.swing.JPanel;
 import org.bytedeco.opencv.opencv_core.Point2f;
 import org.opencv.core.*;
 import util.JPanelImageUtil;
+import util.Tuple;
 
 /**
  *
@@ -280,10 +280,10 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
             return;
         }
 
-        Pair<java.awt.Point, java.awt.Dimension> ddoImg = JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[1]);
+        Tuple<java.awt.Point, java.awt.Dimension> ddoImg = JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[1]);
         
-        obj.setPosicaoImagem(ddoImg.getKey());
-        obj.setTamanhoImagem(ddoImg.getValue());
+        obj.setPosicaoImagem(ddoImg.x);
+        obj.setTamanhoImagem(ddoImg.y);
         
         //System.out.printf("%d, %d, %d, %d\n", ddoImg[0], ddoImg[1], ddoImg[2], ddoImg[3]);
 
