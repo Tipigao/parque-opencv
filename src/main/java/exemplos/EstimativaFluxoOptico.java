@@ -42,6 +42,9 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 
     private final String descricao = "Estimativa de fluxo óptico";
 
+    private int numMaxCantos;
+    private double nivelQualidade;
+
     private Mat imgCinza, imgCinzaAnt, mascaraAreaDeteccao;
     private java.awt.Point pontoIni, pontoFim;
     private Random rng;
@@ -53,7 +56,9 @@ public class EstimativaFluxoOptico extends CapturaVideo {
     private MatOfByte status;
     private MatOfFloat err;
 
-    private boolean exibeMelhoresPontos, exibeRastreamento, exibeLinhasRastreamento;
+    private boolean exibeMelhoresPontos, exibeRastreamento, exibeLinhasRastreamento, exibeInformacoes;
+    
+    StringBuilder sbInfo;
 
     public EstimativaFluxoOptico() {
         rng = new Random(12345);
@@ -63,8 +68,30 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         nextFeatures = new MatOfPoint2f();
         status = new MatOfByte();
         err = new MatOfFloat();
+
+        exibeInformacoes = true;
+        numMaxCantos = 10;
+        nivelQualidade = 0.01;
+        
+        sbInfo = new StringBuilder();
     }
 
+    public int getNumMaxCantos() {
+        return numMaxCantos;
+    }
+
+    public void setNumMaxCantos(int numMaxCantos) {
+        this.numMaxCantos = numMaxCantos;
+    }
+
+    public double getNivelQualidade() {
+        return nivelQualidade;
+    }
+
+    public void setNivelQualidade(double nivelQualidade) {
+        this.nivelQualidade = nivelQualidade;
+    }
+    
     public boolean getExibeMelhoresPontos() {
         return exibeMelhoresPontos;
     }
@@ -73,11 +100,11 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         this.exibeMelhoresPontos = exibeMelhoresPontos;
         restauraConfiguracaoRastreamento();
     }
-    
+
     public boolean getExibeLinhasRastreamento() {
         return exibeLinhasRastreamento;
     }
-    
+
     public void setExibeLinhasRastreamento(boolean exibeLinhasRastreamento) {
         this.exibeLinhasRastreamento = exibeLinhasRastreamento;
     }
@@ -89,6 +116,15 @@ public class EstimativaFluxoOptico extends CapturaVideo {
     public void setExibeRastreamento(boolean exibeRastreamento) {
         this.exibeRastreamento = exibeRastreamento;
         restauraConfiguracaoRastreamento();
+    }
+
+    //exibeInformacoes
+    public boolean getExibeInformacoes() {
+        return exibeInformacoes;
+    }
+
+    public void setExibeInformacoes(boolean exibeInformacoes) {
+        this.exibeInformacoes = exibeInformacoes;
     }
 
     public java.awt.Point getPontotIni() {
@@ -117,10 +153,10 @@ public class EstimativaFluxoOptico extends CapturaVideo {
             exibeMelhoresPontosRastreamento(imgDestino);
         } else if (getExibeRastreamento()) {
             estimarFluxoOptico(imgFrame, imgDestino);
-            
+
             exibeCirculosMelhorRastreamento(imgDestino);
-            
-            if(getExibeLinhasRastreamento()){
+
+            if (getExibeLinhasRastreamento()) {
                 exibeLinhasRastreamento(imgDestino);
             }
         }
@@ -129,10 +165,14 @@ public class EstimativaFluxoOptico extends CapturaVideo {
             desenhaRetangulo(imgDestino);
         }
 
+        if (exibeInformacoes) {
+            exibeInformacoesFerramenta(imgDestino);
+        }
+
         return imgDestino;
     }
-    
-    private void restauraConfiguracaoRastreamento(){
+
+    private void restauraConfiguracaoRastreamento() {
         features = new MatOfPoint();
         prevFeatures = new MatOfPoint2f();
         nextFeatures = new MatOfPoint2f();
@@ -166,7 +206,7 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         }
 
         imgCinzaAnt = imgCinzaAnt == null ? imgCinza.clone() : imgCinzaAnt;
-        
+
         Video.calcOpticalFlowPyrLK(imgCinzaAnt, imgCinza, prevFeatures, nextFeatures, status, err);
 
         imgCinzaAnt = imgCinza.clone();
@@ -174,22 +214,27 @@ public class EstimativaFluxoOptico extends CapturaVideo {
     }
 
     private void extraiCaracteristicasImagem() {
-        int maxCorners = 10;
-        double qualityLevel = 0.01;
         double minDistance = 10;
         int blockSize = 3;
         int gradientSize = 3;
         boolean useHarrisDetector = false;
         double k = 0.04;
 
-        mascaraAreaDeteccao = mascaraAreaDeteccao == null ? new Mat() : mascaraAreaDeteccao;
+        //mascaraAreaDeteccao = mascaraAreaDeteccao == null ? new Mat() : mascaraAreaDeteccao;
+        
+        //mascaraAreaDeteccao = Mat.zeros(imgCinza.size(), CvType.CV_8U);
+        mascaraAreaDeteccao = new Mat();
+        
+        if(mascaraAreaDeteccao.empty()){
+            //mascaraAreaDeteccao.adjustROI(50, 50, 50, 50);
+        }
 
         //Mat copy = imgOrigem.clone();
         Imgproc.goodFeaturesToTrack(
                 imgCinza,
                 features,
-                maxCorners,
-                qualityLevel,
+                getNumMaxCantos(),
+                getNivelQualidade(),
                 minDistance,
                 mascaraAreaDeteccao,
                 blockSize,
@@ -211,7 +256,7 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         retang = new Rectangle(p1, new Dimension((int) p2.getX(), (int) p2.getY()));
 
         //mascaraAreaDeteccao = Mat.zeros(imgCinza.size(), CvType.CV_8U); 
-        mascaraAreaDeteccao = new Mat();
+        //mascaraAreaDeteccao = new Mat();
 
         setPontoIni(null);
         setPontoFim(null);
@@ -310,9 +355,28 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         Scalar color = new Scalar(255);
 
         for (int i = 0; i < prevList.size(); i++) {
-//                    Core.circle(mGray, prevList.get(i), 5, color);
             Imgproc.line(img, prevList.get(i), nextList.get(i), color);
         }
+    }
+
+    private void exibeInformacoesFerramenta(Mat img) {
+        sbInfo.delete(0, sbInfo.length());
+        
+        sbInfo.append(numMaxCantos<=0 ? "Sem limite de cantos: " : "Limite de cantos: ")
+                .append((int)features.size().height);
+        
+        
+        
+        Imgproc.putText(
+                img, // Matrix obj of the image
+                sbInfo.toString(), // Text to be added
+                new Point(5, 15), // point
+                0, // front face
+                0.4, // front scale
+                new Scalar(0, 255, 0), // Scalar object for color
+                1 // Thickness
+        );
+
     }
 
     @Override

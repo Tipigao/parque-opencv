@@ -37,7 +37,7 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
 
         obj = new EstimativaFluxoOptico();
         obj.addObserver(this);
-        
+
         obj.setExibeMelhoresPontos(radMelhoresPontos.isSelected());
         obj.setExibeRastreamento(radRastreamento.isSelected());
         cbxLinhas.setEnabled(radRastreamento.isSelected());
@@ -55,52 +55,83 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        sldHisterese2 = new javax.swing.JSlider();
-        spnHisterese1 = new javax.swing.JSpinner();
+        sldNumMaxCantos = new javax.swing.JSlider();
+        spnNumMaxCantos = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        sldNivelQualidade = new javax.swing.JSlider();
+        txtNivelQualidade = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        cbxGradiente = new javax.swing.JCheckBox();
+        cbxInformacoes = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         radMelhoresPontos = new javax.swing.JRadioButton();
         radRastreamento = new javax.swing.JRadioButton();
         cbxLinhas = new javax.swing.JCheckBox();
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Detecção de contorno (Bordas de Canny)"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Ajuste de detecção de cantos com maior destaque"));
         jPanel2.setLayout(new java.awt.GridLayout(0, 3, 5, 5));
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("1º limiar histerese");
+        jLabel5.setText("Núm. máx. cantos");
+        jLabel5.setToolTipText("Número máximo de cantos para retornar. Se há mais cantos do que são encontrados, o mais forte deles é retornado. Se o valor for < = 0 implica que nenhum limite no máximo é definido e todos os cantos detectados são retornados.");
         jPanel2.add(jLabel5);
 
-        sldHisterese2.setMaximum(2000);
-        sldHisterese2.setMinimum(1);
-        sldHisterese2.setValue(600);
-        sldHisterese2.addChangeListener(new javax.swing.event.ChangeListener() {
+        sldNumMaxCantos.setMaximum(1000);
+        sldNumMaxCantos.setToolTipText("Número máximo de cantos para retornar. Se há mais cantos do que são encontrados, o mais forte deles é retornado. Se o valor for < = 0 implica que nenhum limite no máximo é definido e todos os cantos detectados são retornados.");
+        sldNumMaxCantos.setValue(10);
+        sldNumMaxCantos.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                sldHisterese2StateChanged(evt);
+                sldNumMaxCantosStateChanged(evt);
             }
         });
-        jPanel2.add(sldHisterese2);
+        jPanel2.add(sldNumMaxCantos);
 
-        spnHisterese1.addChangeListener(new javax.swing.event.ChangeListener() {
+        spnNumMaxCantos.setModel(new javax.swing.SpinnerNumberModel(10, 0, 1000, 1));
+        spnNumMaxCantos.setToolTipText("Número máximo de cantos para retornar. Se há mais cantos do que são encontrados, o mais forte deles é retornado. Se o valor for < = 0 implica que nenhum limite no máximo é definido e todos os cantos detectados são retornados.");
+        spnNumMaxCantos.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spnHisterese1StateChanged(evt);
+                spnNumMaxCantosStateChanged(evt);
             }
         });
-        jPanel2.add(spnHisterese1);
+        jPanel2.add(spnNumMaxCantos);
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("Nível de qualidade");
+        jLabel6.setToolTipText("Número máximo de cantos para retornar. Se há mais cantos do que são encontrados, o mais forte deles é retornado. Se o valor for < = 0 implica que nenhum limite no máximo é definido e todos os cantos detectados são retornados.");
+        jPanel2.add(jLabel6);
+
+        sldNivelQualidade.setMaximum(99);
+        sldNivelQualidade.setMinimum(1);
+        sldNivelQualidade.setToolTipText("Número máximo de cantos para retornar. Se há mais cantos do que são encontrados, o mais forte deles é retornado. Se o valor for < = 0 implica que nenhum limite no máximo é definido e todos os cantos detectados são retornados.");
+        sldNivelQualidade.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldNivelQualidadeStateChanged(evt);
+            }
+        });
+        jPanel2.add(sldNivelQualidade);
+
+        txtNivelQualidade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtNivelQualidade.setText("0,01");
+        txtNivelQualidade.setEnabled(false);
+        jPanel2.add(txtNivelQualidade);
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel7.setText("Gradiente");
+        jLabel7.setText("Informações");
         jPanel2.add(jLabel7);
 
-        cbxGradiente.setSelected(true);
-        cbxGradiente.addChangeListener(new javax.swing.event.ChangeListener() {
+        cbxInformacoes.setSelected(true);
+        cbxInformacoes.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                cbxGradienteStateChanged(evt);
+                cbxInformacoesStateChanged(evt);
             }
         });
-        jPanel2.add(cbxGradiente);
+        cbxInformacoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxInformacoesActionPerformed(evt);
+            }
+        });
+        jPanel2.add(cbxInformacoes);
 
-        jPanel3.setLayout(new java.awt.GridLayout());
+        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
 
         buttonGroup1.add(radMelhoresPontos);
         radMelhoresPontos.setSelected(true);
@@ -113,7 +144,7 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         jPanel3.add(radMelhoresPontos);
 
         buttonGroup1.add(radRastreamento);
-        radRastreamento.setText("Rastreamento");
+        radRastreamento.setText("Fluxo Óptico");
         radRastreamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radRastreamentoActionPerformed(evt);
@@ -148,30 +179,32 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addContainerGap(93, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(241, Short.MAX_VALUE)))
         );
+
+        jPanel2.getAccessibleContext().setAccessibleName("pnlAjustes");
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sldHisterese2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldHisterese2StateChanged
-        //int vl = (int) sldHisterese1.getValue();
-        //obj.setCannyThreshold1(vl);
-        //spnHisterese1.setValue(vl);
-    }//GEN-LAST:event_sldHisterese2StateChanged
+    private void sldNumMaxCantosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldNumMaxCantosStateChanged
+        int vl = (int) sldNumMaxCantos.getValue();
+        obj.setNumMaxCantos(vl);
+        spnNumMaxCantos.setValue(vl);
+    }//GEN-LAST:event_sldNumMaxCantosStateChanged
 
-    private void spnHisterese1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnHisterese1StateChanged
-        //int vl = (int) spnHisterese1.getValue();
-        //obj.setCannyThreshold1(vl);
-        //sldHisterese1.setValue(vl);
-    }//GEN-LAST:event_spnHisterese1StateChanged
+    private void spnNumMaxCantosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnNumMaxCantosStateChanged
+        int vl = (int) spnNumMaxCantos.getValue();
+        obj.setNumMaxCantos(vl);
+        sldNumMaxCantos.setValue(vl);
+    }//GEN-LAST:event_spnNumMaxCantosStateChanged
 
-    private void cbxGradienteStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbxGradienteStateChanged
+    private void cbxInformacoesStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbxInformacoesStateChanged
         //obj.setCannyGradient(cbxGradiente.isSelected());
-    }//GEN-LAST:event_cbxGradienteStateChanged
+    }//GEN-LAST:event_cbxInformacoesStateChanged
 
     private void radMelhoresPontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radMelhoresPontosActionPerformed
         obj.setExibeMelhoresPontos(radMelhoresPontos.isSelected());
@@ -188,6 +221,17 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
     private void cbxLinhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxLinhasActionPerformed
         obj.setExibeLinhasRastreamento(cbxLinhas.isSelected());
     }//GEN-LAST:event_cbxLinhasActionPerformed
+
+    private void cbxInformacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxInformacoesActionPerformed
+        obj.setExibeInformacoes(cbxInformacoes.isSelected());
+    }//GEN-LAST:event_cbxInformacoesActionPerformed
+
+    private void sldNivelQualidadeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldNivelQualidadeStateChanged
+        double vl = (double)sldNivelQualidade.getValue()/100.0;
+        obj.setNivelQualidade(vl);
+        txtNivelQualidade.setText(""+vl);
+        //spnNivelQualidade.setValue(vl);
+    }//GEN-LAST:event_sldNivelQualidadeStateChanged
 
     // <editor-fold defaultstate="collapsed" desc="Métodos herdados">
     @Override
@@ -208,20 +252,19 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
     @Override
     public void setPainelExibicao(JPanel painel) {
         pnlExibicao = painel;
-        
+
         MouseAdapter mouse = new MouseAdapter() {
-            
+
 //            @Override
 //            public void mouseMoved(MouseEvent e) {
 //                //obj.setPoint(e.getPoint());
 //                System.out.printf("    %d, %d\n", e.getPoint().x, e.getPoint().y);
 //            }
-            
             @Override
             public void mouseDragged(MouseEvent e) {
                 obj.setPontoFim(e.getPoint());
             }
-            
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 obj.setPontoFim(e.getPoint());
@@ -281,30 +324,29 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         }
 
         Pair<java.awt.Point, java.awt.Dimension> ddoImg = JPanelImageUtil.drawImageWithAspectRatio(pnlExibicao, bufImgs[1]);
-        
+
         obj.setPosicaoImagem(ddoImg.getKey());
         obj.setTamanhoImagem(ddoImg.getValue());
-        
-        //System.out.printf("%d, %d, %d, %d\n", ddoImg[0], ddoImg[1], ddoImg[2], ddoImg[3]);
 
+        //System.out.printf("%d, %d, %d, %d\n", ddoImg[0], ddoImg[1], ddoImg[2], ddoImg[3]);
         camDisponivel = true;
     }
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JCheckBox cbxGradiente;
+    private javax.swing.JCheckBox cbxInformacoes;
     private javax.swing.JCheckBox cbxLinhas;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JRadioButton radMelhoresPontos;
     private javax.swing.JRadioButton radRastreamento;
-    private javax.swing.JSlider sldHisterese1;
-    private javax.swing.JSlider sldHisterese2;
-    private javax.swing.JSpinner spnHisterese1;
+    private javax.swing.JSlider sldNivelQualidade;
+    private javax.swing.JSlider sldNumMaxCantos;
+    private javax.swing.JSpinner spnNumMaxCantos;
+    private javax.swing.JTextField txtNivelQualidade;
     // End of variables declaration//GEN-END:variables
 }
