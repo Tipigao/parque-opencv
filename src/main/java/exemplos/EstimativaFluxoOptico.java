@@ -172,7 +172,7 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         return imgDestino;
     }
 
-    private void restauraConfiguracaoRastreamento() {
+    public void restauraConfiguracaoRastreamento() {
         features = new MatOfPoint();
         prevFeatures = new MatOfPoint2f();
         nextFeatures = new MatOfPoint2f();
@@ -188,7 +188,7 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 
         Imgproc.cvtColor(imgOrigem, imgCinza, Imgproc.COLOR_BGR2GRAY);
 
-        extraiCaracteristicasImagem();
+        analisaCaracteristicasImagem();
 
     }
 
@@ -200,7 +200,7 @@ public class EstimativaFluxoOptico extends CapturaVideo {
 
         //if (features.toArray().length == 0) {
         if (features.empty()) {
-            extraiCaracteristicasImagem();
+            analisaCaracteristicasImagem();
 
             prevFeatures.fromList(features.toList());
         }
@@ -213,7 +213,7 @@ public class EstimativaFluxoOptico extends CapturaVideo {
         prevFeatures.fromList(nextFeatures.toList());
     }
 
-    private void extraiCaracteristicasImagem() {
+    private void analisaCaracteristicasImagem() {
         double minDistance = 10;
         int blockSize = 3;
         int gradientSize = 3;

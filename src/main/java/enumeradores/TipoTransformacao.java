@@ -11,7 +11,13 @@ package enumeradores;
  */
 public enum TipoTransformacao {
 
-    DesfocagemGaussiana("Desfocagem Gaussiana", exemplos.DesfocagemGaussiana.class.getName())
+    /*
+    Correspondências entre duas imagens: https://docs.opencv.org/3.4/db/d70/tutorial_akaze_matching.html
+    
+    */
+    
+    CorrespondenciaForcaBruta("Correspondência por Força Bruta", exemplos.CorrespondenciaForcaBruta.class.getName())
+    ,DesfocagemGaussiana("Desfocagem Gaussiana", exemplos.DesfocagemGaussiana.class.getName())
     ,EstimativaFluxoOptico("Estimativa de Fluxo Óptico", exemplos.EstimativaFluxoOptico.class.getName())
     ,TransformadaDeHough("Transformada de Hough", exemplos.TransformadaHough.class.getName())
     //,DetectaCantosHarris("Detecta Cantos Harris", exemplos.DetectaCantosHarris.class.getName())

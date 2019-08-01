@@ -5,6 +5,7 @@
  */
 package parqueopencv;
 
+import exemplos.DemoSURFFLANNMatchingHomography;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -45,8 +46,7 @@ public class Principal extends javax.swing.JFrame {
         pnlControles = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cboDemonstracao = new javax.swing.JComboBox<>();
-        btnVisualizar = new javax.swing.JButton();
-        btnPararExibicao = new javax.swing.JButton();
+        btnPausaExibicao = new javax.swing.JButton();
         cbxMiniaturaProcessada = new javax.swing.JCheckBox();
         pnlControleItem = new javax.swing.JScrollPane();
         cbxNormalInvertida = new javax.swing.JCheckBox();
@@ -88,19 +88,10 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        btnVisualizar.setText("Exibir");
-        btnVisualizar.setEnabled(false);
-        btnVisualizar.addActionListener(new java.awt.event.ActionListener() {
+        btnPausaExibicao.setText("Pausar");
+        btnPausaExibicao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVisualizarActionPerformed(evt);
-            }
-        });
-
-        btnPararExibicao.setText("Parar");
-        btnPararExibicao.setEnabled(false);
-        btnPararExibicao.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPararExibicaoActionPerformed(evt);
+                btnPausaExibicaoActionPerformed(evt);
             }
         });
 
@@ -136,10 +127,8 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(cbxMiniaturaProcessada)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxNormalInvertida)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                        .addComponent(btnPararExibicao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnVisualizar)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                        .addComponent(btnPausaExibicao)))
                 .addContainerGap())
         );
         pnlControlesLayout.setVerticalGroup(
@@ -151,8 +140,7 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(cboDemonstracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlControlesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnVisualizar)
-                    .addComponent(btnPararExibicao)
+                    .addComponent(btnPausaExibicao)
                     .addComponent(cbxMiniaturaProcessada)
                     .addComponent(cbxNormalInvertida))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -207,20 +195,14 @@ public class Principal extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
 
-    private void btnVisualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizarActionPerformed
-        if (cboDemonstracao.getSelectedIndex() == 1) {
-            exibeVideoCamera();
-        }
-    }//GEN-LAST:event_btnVisualizarActionPerformed
-
     private void cboDemonstracaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboDemonstracaoActionPerformed
         javax.swing.JComboBox cbo = (javax.swing.JComboBox) evt.getSource();
         exibeVideoCamera();
     }//GEN-LAST:event_cboDemonstracaoActionPerformed
 
-    private void btnPararExibicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPararExibicaoActionPerformed
-        exibeVideoCamera();
-    }//GEN-LAST:event_btnPararExibicaoActionPerformed
+    private void btnPausaExibicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPausaExibicaoActionPerformed
+        setPausa(!bPausa);
+    }//GEN-LAST:event_btnPausaExibicaoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         DefaultComboBoxModel opt = new DefaultComboBoxModel(enumeradores.TipoTransformacao.values());
@@ -273,6 +255,12 @@ public class Principal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
     
+    private void setPausa(boolean vlPausa){
+        bPausa = vlPausa;
+        objDemo.setPausa(bPausa);
+        btnPausaExibicao.setText(bPausa ? "Exibir" : "Pausar");
+    }
+    
     public void exibeVideoCamera() {
         try {
             String nmClasse = null;
@@ -304,6 +292,8 @@ public class Principal extends javax.swing.JFrame {
             //pnlControleItem.setSize(new Dimension(600, 350));
             objDemo.setExibicaoInvertida(cbxNormalInvertida.isSelected());
             objDemo.setPainelExibicao(pnlSaidaImagem);
+            setPausa(false);
+            objDemo.setPausa(bPausa);
             objDemo.iniciar();
             pnlDemo.setVisible(true);
             
@@ -378,18 +368,19 @@ public class Principal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+               new Principal().setVisible(true);
                 //new CornerSubPix(args);
+                 //new DemoSURFFLANNMatchingHomography().run(args);
             }
         });
     }
     
     private captura.ICapturaVideoUI objDemo;
     private java.util.Timer temporizadorVerificaCamera;
+    private boolean bPausa;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnPararExibicao;
-    private javax.swing.JButton btnVisualizar;
+    private javax.swing.JButton btnPausaExibicao;
     private javax.swing.JComboBox<String> cboDemonstracao;
     private javax.swing.JCheckBox cbxMiniaturaProcessada;
     private javax.swing.JCheckBox cbxNormalInvertida;

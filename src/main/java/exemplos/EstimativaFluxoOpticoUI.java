@@ -66,6 +66,7 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         radMelhoresPontos = new javax.swing.JRadioButton();
         radRastreamento = new javax.swing.JRadioButton();
         cbxLinhas = new javax.swing.JCheckBox();
+        btnProcurarCantos = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Ajuste de detecção de cantos com maior destaque"));
         jPanel2.setLayout(new java.awt.GridLayout(0, 3, 5, 5));
@@ -102,6 +103,7 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         sldNivelQualidade.setMaximum(99);
         sldNivelQualidade.setMinimum(1);
         sldNivelQualidade.setToolTipText("Número máximo de cantos para retornar. Se há mais cantos do que são encontrados, o mais forte deles é retornado. Se o valor for < = 0 implica que nenhum limite no máximo é definido e todos os cantos detectados são retornados.");
+        sldNivelQualidade.setValue(1);
         sldNivelQualidade.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sldNivelQualidadeStateChanged(evt);
@@ -131,7 +133,7 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         });
         jPanel2.add(cbxInformacoes);
 
-        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
+        jPanel3.setLayout(new java.awt.GridLayout(1, 3, 5, 5));
 
         buttonGroup1.add(radMelhoresPontos);
         radMelhoresPontos.setSelected(true);
@@ -160,18 +162,29 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         });
         jPanel3.add(cbxLinhas);
 
+        btnProcurarCantos.setText("Procurar cantos");
+        btnProcurarCantos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcurarCantosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnProcurarCantos)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
@@ -179,7 +192,9 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnProcurarCantos)
+                .addContainerGap(59, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -232,6 +247,10 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
         txtNivelQualidade.setText(""+vl);
         //spnNivelQualidade.setValue(vl);
     }//GEN-LAST:event_sldNivelQualidadeStateChanged
+
+    private void btnProcurarCantosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarCantosActionPerformed
+        obj.restauraConfiguracaoRastreamento();
+    }//GEN-LAST:event_btnProcurarCantosActionPerformed
 
     // <editor-fold defaultstate="collapsed" desc="Métodos herdados">
     @Override
@@ -313,6 +332,11 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
     public boolean getExibicaoInvertida() {
         return obj.getExibicaoInvertida();
     }
+    
+    @Override
+    public void setPausa(boolean bPausa){
+        obj.setPausa(bPausa);
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -334,6 +358,7 @@ public class EstimativaFluxoOpticoUI extends javax.swing.JPanel implements ICapt
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnProcurarCantos;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox cbxInformacoes;
     private javax.swing.JCheckBox cbxLinhas;

@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -32,12 +34,38 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
     private boolean exibicaoInvertida;
     private java.awt.Point posicaoImagem;
     private java.awt.Dimension dimensoesImagem;
-    
+    private boolean bPausa;
+    private int totalFrameCount;
+    private TimerTask updateFPS;
+    private Timer timer;
+
     public void iniciarCaptura() {
         capturaEmAndamento = true;
         if (tarefa != null) {
             tarefa.interrupt();
         }
+
+        if(updateFPS != null){
+            updateFPS.cancel();
+        }
+        
+        if(timer != null){
+            timer.cancel();
+            timer.purge();
+        }
+        
+        updateFPS = new TimerTask() {
+            public void run() {
+                // display current totalFrameCount - previous,
+                // OR
+                // display current totalFrameCount, then set
+                System.out.println("FPS: " + totalFrameCount);
+                totalFrameCount = 0;
+            }
+        };
+        
+        timer = new Timer();
+        timer.scheduleAtFixedRate(updateFPS, 1000, 1000);
 
         tarefa = new Thread(this);
         tarefa.start();
@@ -50,6 +78,15 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
             tarefa.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(CapturaVideo.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            if(updateFPS != null){
+                updateFPS.cancel();
+            }
+
+            if(timer != null){
+                timer.cancel();
+                timer.purge();
+            }
         }
     }
 
@@ -60,24 +97,28 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
     public boolean getExibicaoInvertida() {
         return exibicaoInvertida;
     }
-    
+
+    public void setPausa(boolean bPausa) {
+        this.bPausa = bPausa;
+    }
+
     @Override
-    public java.awt.Point getPosicaoImagem(){
+    public java.awt.Point getPosicaoImagem() {
         return posicaoImagem;
     }
-    
+
     @Override
-    public void setPosicaoImagem(java.awt.Point posicaoImagem){
+    public void setPosicaoImagem(java.awt.Point posicaoImagem) {
         this.posicaoImagem = posicaoImagem;
     }
-    
+
     @Override
-    public java.awt.Dimension getTamanhoImagem(){
+    public java.awt.Dimension getTamanhoImagem() {
         return dimensoesImagem;
     }
-    
+
     @Override
-    public void setTamanhoImagem(java.awt.Dimension dimensoesImagem){
+    public void setTamanhoImagem(java.awt.Dimension dimensoesImagem) {
         this.dimensoesImagem = dimensoesImagem;
     }
 
@@ -107,7 +148,13 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
             Mat imgFrame = new Mat();
 
             while (capturaEmAndamento) {
-                camera.read(imgFrame);
+                totalFrameCount++;
+
+                //Verificar aumento excessivo de uso do CPU. Limitar a iteração neste laço de repetição
+                if (!bPausa) {
+                    camera.read(imgFrame);
+                }
+
                 if (imgFrame.empty()) {
                     continue;
                 }
@@ -117,7 +164,7 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
                 }
 
                 Mat imgProcessada = processaFrame(imgFrame);
-                
+
                 BufferedImage buffImg1 = matToBufferedImage(imgFrame);
                 BufferedImage buffImg2 = matToBufferedImage(imgProcessada);
                 setChanged();
@@ -130,6 +177,11 @@ public abstract class CapturaVideo extends Observable implements Runnable, IFram
             System.out.println(new Date() + ": " + getDescricao() + " finalizado");
             if (camera != null) {
                 camera.release();
+            }
+
+            if (timer != null) {
+                timer.cancel();
+                timer.purge();
             }
         }
     }

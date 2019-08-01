@@ -251,7 +251,12 @@ public class DesfocagemGaussianaUI extends javax.swing.JPanel implements ICaptur
     public boolean getExibicaoInvertida() {
         return obj.getExibicaoInvertida();
     }
-
+    
+    @Override
+    public void setPausa(boolean bPausa){
+        obj.setPausa(bPausa);
+    }
+    
     @Override
     public void update(Observable o, Object arg) {
         BufferedImage[] bufImgs = (BufferedImage[]) arg;

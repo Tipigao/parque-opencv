@@ -101,10 +101,8 @@
                               <Component id="cbxMiniaturaProcessada" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxNormalInvertida" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="50" max="32767" attributes="0"/>
-                              <Component id="btnPararExibicao" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnVisualizar" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="104" max="32767" attributes="0"/>
+                              <Component id="btnPausaExibicao" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -121,8 +119,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btnVisualizar" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnPararExibicao" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnPausaExibicao" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cbxMiniaturaProcessada" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cbxNormalInvertida" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -157,22 +154,12 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="btnVisualizar">
+            <Component class="javax.swing.JButton" name="btnPausaExibicao">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Exibir"/>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="text" type="java.lang.String" value="Pausar"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVisualizarActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnPararExibicao">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Parar"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPararExibicaoActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPausaExibicaoActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="cbxMiniaturaProcessada">

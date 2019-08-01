@@ -7,13 +7,10 @@ package exemplos;
 
 import captura.ICapturaVideoUI;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JPanel;
-import captura.IFrameOpenCV;
 import javax.swing.JColorChooser;
 import util.JPanelImageUtil;
 import util.StringUtil;
@@ -620,6 +617,11 @@ public class TransformadaHoughUI extends javax.swing.JPanel implements ICapturaV
     @Override
     public boolean getExibicaoInvertida() {
         return obj.getExibicaoInvertida();
+    }
+    
+    @Override
+    public void setPausa(boolean bPausa){
+        obj.setPausa(bPausa);
     }
 
     @Override

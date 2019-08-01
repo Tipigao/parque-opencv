@@ -19,4 +19,5 @@ public interface ICapturaVideoUI {
     public void setRenderizaMiniaturaProcessada(boolean renderizaMiniaturaProcessada);
     public void setExibicaoInvertida(boolean exibicaoInvertida);
     public boolean getExibicaoInvertida();
+    public void setPausa(boolean bPausa);
 }

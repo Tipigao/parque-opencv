@@ -33,7 +33,7 @@ import org.opencv.imgproc.Imgproc;
  *
  * @author robertosilva
  */
-public class CornerSubPix{
+public class DemoCornerSubPix{
     private Mat src = new Mat();
     private Mat srcGray = new Mat();
     private JFrame frame;
@@ -42,7 +42,7 @@ public class CornerSubPix{
     private int maxCorners = 10;
     private Random rng = new Random(12345);
     
-    public CornerSubPix(String[] args) {
+    public DemoCornerSubPix(String[] args) {
         String filename = args.length > 0 ? args[0] : "C:\\Users\\robertosilva\\Documents\\maca.png";
         src = Imgcodecs.imread(filename);
         if (src.empty()) {

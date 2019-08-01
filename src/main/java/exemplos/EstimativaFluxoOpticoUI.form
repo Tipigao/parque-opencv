@@ -20,15 +20,21 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel2" pref="348" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel2" pref="352" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="btnProcurarCantos" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel3" pref="348" max="32767" attributes="0"/>
+                  <Component id="jPanel3" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -39,7 +45,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="93" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnProcurarCantos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="59" max="32767" attributes="0"/>
           </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
@@ -111,6 +119,7 @@
             <Property name="maximum" type="int" value="99"/>
             <Property name="minimum" type="int" value="1"/>
             <Property name="toolTipText" type="java.lang.String" value="N&#xfa;mero m&#xe1;ximo de cantos para retornar. Se h&#xe1; mais cantos do que s&#xe3;o encontrados, o mais forte deles &#xe9; retornado. Se o valor for &lt; = 0 implica que nenhum limite no m&#xe1;ximo &#xe9; definido e todos os cantos detectados s&#xe3;o retornados."/>
+            <Property name="value" type="int" value="1"/>
           </Properties>
           <Events>
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="sldNivelQualidadeStateChanged"/>
@@ -143,8 +152,10 @@
     <Container class="javax.swing.JPanel" name="jPanel3">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="0"/>
+        <Property name="columns" type="int" value="3"/>
+        <Property name="horizontalGap" type="int" value="5"/>
         <Property name="rows" type="int" value="1"/>
+        <Property name="verticalGap" type="int" value="5"/>
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JRadioButton" name="radMelhoresPontos">
@@ -180,5 +191,13 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="btnProcurarCantos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Procurar cantos"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProcurarCantosActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>
